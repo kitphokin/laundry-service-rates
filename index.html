@@ -76,34 +76,47 @@
                 transform: translateY(0);
             }
         }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-size: 18px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
-    <!-- Tab Navigation -->
-    <div class="tab-navigation">
-        <button class="tab-btn active" onclick="switchTab('th')">
-            🇹🇭 ภาษาไทย
-        </button>
-        <button class="tab-btn" onclick="switchTab('en')">
-            🇬🇧 English
-        </button>
-    </div>
-
-    <!-- Thai Version -->
-    <div id="th-content" class="tab-content active">
-        <div class="image-container">
-            <img src="https://your-domain.com/images/price-th.jpg" 
-                 alt="อัตราค่าบริการซักรีด ภาษาไทย" 
-                 class="price-image">
+    <div id="loading" class="loading">กำลังโหลด...</div>
+    
+    <div id="main-content" style="display: none;">
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="switchTab('th')">
+                🇹🇭 ภาษาไทย
+            </button>
+            <button class="tab-btn" onclick="switchTab('en')">
+                🇬🇧 English
+            </button>
         </div>
-    </div>
 
-    <!-- English Version -->
-    <div id="en-content" class="tab-content">
-        <div class="image-container">
-            <img src="https://your-domain.com/images/price-en.jpg" 
-                 alt="Service Rates English" 
-                 class="price-image">
+        <!-- Thai Version -->
+        <div id="th-content" class="tab-content active">
+            <div class="image-container">
+                <img src="price-th.jpg" 
+                     alt="อัตราค่าบริการซักรีด ภาษาไทย" 
+                     class="price-image">
+            </div>
+        </div>
+
+        <!-- English Version -->
+        <div id="en-content" class="tab-content">
+            <div class="image-container">
+                <img src="price-en.jpg" 
+                     alt="Service Rates English" 
+                     class="price-image">
+            </div>
         </div>
     </div>
 
@@ -111,11 +124,14 @@
         // Initialize LIFF
         window.onload = function() {
             liff.init({ 
-                liffId: 'YOUR-LIFF-ID' 
+                liffId: 'YOUR-LIFF-ID-HERE'  // จะแก้ไขในภายหลัง
             }).then(() => {
                 console.log('LIFF initialized successfully');
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
             }).catch((err) => {
                 console.error('LIFF initialization failed', err);
+                document.getElementById('loading').innerHTML = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
             });
         };
 
@@ -135,3 +151,52 @@
     </script>
 </body>
 </html>
+```
+
+4. พิมพ์ Commit message: `Add index.html`
+5. คลิก **"Commit changes"**
+
+---
+
+## **STEP 4: เปิดใช้งาน GitHub Pages**
+
+### 4.1 ตั้งค่า GitHub Pages
+1. ไปที่ **Settings** (ในเมนูบนของ Repository)
+2. เลื่อนลงไปหา **"Pages"** ทางซ้ายมือ
+3. ในส่วน **Source** เลือก:
+   - Branch: `main`
+   - Folder: `/ (root)`
+4. คลิก **"Save"**
+5. รอสักครู่ (~1-2 นาที) จะมี URL ขึ้นมา เช่น:
+```
+   https://YOUR-USERNAME.github.io/laundry-price-liff/
+```
+6. **คัดลอก URL นี้ไว้** จะใช้ในขั้นตอนถัดไป
+
+### 4.2 ทดสอบเว็บไซต์
+1. เปิด URL ที่ได้ในเบราว์เซอร์
+2. ควรเห็นหน้าเว็บแสดงภาพ (อาจจะยังใช้งานไม่ได้เพราะยังไม่ได้ตั้ง LIFF ID)
+
+---
+
+## **STEP 5: สร้าง LIFF App ใน LINE Developers**
+
+### 5.1 เข้าสู่ LINE Developers Console
+1. เปิด [https://developers.line.biz/console/](https://developers.line.biz/console/)
+2. Login ด้วย LINE Account ที่ใช้จัดการ LINE OA
+
+### 5.2 เลือก Channel
+1. เลือก **Provider** ที่มี LINE OA ของคุณ
+2. คลิกเข้า **Channel** (Messaging API) ของบริการซักรีด
+
+### 5.3 สร้าง LIFF App
+1. คลิกแท็บ **"LIFF"** ทางซ้ายมือ
+2. คลิกปุ่ม **"Add"**
+3. กรอกข้อมูล:
+```
+LIFF app name: อัตราค่าบริการซักรีด
+Size: Full
+Endpoint URL: https://YOUR-USERNAME.github.io/laundry-price-liff/
+Scope: ☑️ profile
+       ☐ chat_message.write (ไม่ต้องติ๊ก)
+Bot link feature: On (Aggressive)
